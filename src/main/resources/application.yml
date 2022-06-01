@@ -1,0 +1,42 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: battleships
+  data:
+    mongodb:
+      uri: ${mongo_uri}
+  rabbitmq:
+    addresses: ${rabbit_uri}
+    username: ${rabbit_username}
+    password: ${rabbit_password}
+  zipkin:
+    base-url: ${zipkin_base_url}
+
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: ${eureka_service_url}
+
+# For tests, remove later
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+
+rabbitmq:
+  exchanges:
+    game: internal-game.exchange
+    core: internal-core.exchange
+    notification: internal-notification.exchange
+  queues:
+    game: game.queue
+  routing-keys:
+    game: internal.game.routing-key
+    core: internal.core.routing-key
+    notification: internal.notification.routing-key
