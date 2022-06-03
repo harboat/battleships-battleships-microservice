@@ -9,6 +9,7 @@ import com.github.harboat.clients.notification.NotificationRequest;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.testng.MockitoTestNGListener;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
@@ -142,13 +143,43 @@ public class FleetServiceTest {
         Fleet fleet = new Fleet("testFleet", "test","testPlayer", List.of(ship));
         given(repository.findByGameIdAndPlayerId("test", "testPlayer")).willReturn(Optional.of(fleet));
         given(repository.findByGameIdAndPlayerId("test", "testEnemy")).willReturn(Optional.of(fleet));
+
         ArgumentCaptor<ShotResponse> captor = ArgumentCaptor.forClass(ShotResponse.class);
         //when
         service.shoot(request);
         verify(coreQueueProducer,times(2)).sendResponse(captor.capture());
-        var actual = captor.getValue();
+        var actual = captor.getAllValues();
         //then
-        assertEquals(actual.gameId(), "test");
+        assertEquals(actual.get(1).gameId(), "test");
+    }
+
+    @Test(expectedExceptions = NoSuchElementException.class)
+    public void shootShouldThrowWhenThereIsNoFleetWithThisGameAndPlayerId() {
+        //given
+        NukeShotRequest request = new NukeShotRequest("test", "testPlayer", 1);
+        given(gameUtility.getEnemyId("test", "testPlayer")).willReturn("testEnemy");
+        given(repository.findByGameIdAndPlayerId("test", "testPlayer")).willReturn(Optional.empty());
+        //when
+        service.shoot(request);
+        //then
+    }
+
+    @Test(expectedExceptions = NoSuchElementException.class)
+    public void shootShouldThrowWhenThereIsNoFleetWithThisGameAndEnemyId() {
+        //given
+        Ship ship = new Ship(ShipType.DESTROYER,
+                new MastsState(new HashMap<Integer, MastState>() {{
+                    put(1, MastState.ALIVE);
+                }}),
+                new OccupiedCells(Arrays.asList(2, 11, 12)));
+        Fleet fleet = new Fleet("testFleet", "test","testPlayer", List.of(ship));
+        NukeShotRequest request = new NukeShotRequest("test", "testPlayer", 1);
+        given(gameUtility.getEnemyId("test", "testPlayer")).willReturn("testEnemy");
+        given(repository.findByGameIdAndPlayerId("test", "testPlayer")).willReturn(Optional.of(fleet));
+        given(repository.findByGameIdAndPlayerId("test", "testEnemy")).willReturn(Optional.empty());
+        //when
+        service.shoot(request);
+        //then
     }
 
     @Test
@@ -173,4 +204,5 @@ public class FleetServiceTest {
         //then
         assertEquals(actual.playerId(), "testPlayer");
     }
+
 }
