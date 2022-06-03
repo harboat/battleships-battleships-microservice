@@ -1,6 +1,7 @@
 package com.github.harboat.battleships.fleet;
 
 import com.github.harboat.clients.game.ShipType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @ToString
 @Builder
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Fleet {
     @Id private String id;
     private String gameId;

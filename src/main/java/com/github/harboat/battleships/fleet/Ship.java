@@ -2,6 +2,7 @@ package com.github.harboat.battleships.fleet;
 
 import com.github.harboat.clients.game.OccupiedCells;
 import com.github.harboat.clients.game.ShipType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.*;
 
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @ToString
 @Builder
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Ship {
     private ShipType shipType;
     private MastsState masts;

@@ -5,6 +5,7 @@ import com.github.harboat.battleships.board.BoardService;
 import com.github.harboat.battleships.fleet.FleetService;
 import com.github.harboat.clients.game.GameCreate;
 import com.github.harboat.clients.game.GameCreated;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 @Service
 @AllArgsConstructor
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2")
 public class GameService {
 
     private final GameRepository repository;
